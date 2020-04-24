@@ -31,8 +31,6 @@ React.useEffect(()=>console.log("render"))
 
   function remove(title) {
     dispatch(deleteNote(title))
-
-     console.log(notes[0].title)
   }
 
   function getNewTitle(){
