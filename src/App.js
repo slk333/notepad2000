@@ -2,38 +2,39 @@ import React from "react";
 import Notepad from "./components/Notepad";
 import FileSelector from "./components/FileSelector";
 import { useSelector, useDispatch } from "react-redux";
-import { addNote, deleteNote,selectNotes,selectNotesDirectory ,resetNotes} from "./data/notesSlice";
-
+import {
+  addNote,
+  deleteNote,
+  selectNotes,
+  selectNotesDirectory,
+  resetNotes,
+} from "./data/notesSlice";
 
 function App() {
- 
-React.useEffect(()=>console.log("render"))
+  React.useEffect(() => console.log("render"));
 
   const notes = useSelector(selectNotes);
   const notesDirectory = useSelector(selectNotesDirectory);
   const dispatch = useDispatch();
 
-
   let [fileSelected, setFileSelected] = React.useState(
-    (notes.length === 0) ? "" : notes[0].title
-    
+    notes.length === 0 ? "" : notes[0].title
   );
 
-    React.useEffect(()=>{
-      setFileSelected((notes.length === 0) ? "" : notes[0].title)
-    },[notes]
-    )
+  React.useEffect(() => {
+    setFileSelected(notes.length === 0 ? "" : notes[0].title);
+  }, [notes]);
 
   function save(title, content) {
-    dispatch(addNote({title,content}))
-    setFileSelected(title)
+    dispatch(addNote({ title, content }));
+    setFileSelected(title);
   }
 
   function remove(title) {
-    dispatch(deleteNote(title))
+    dispatch(deleteNote(title));
   }
 
-  function getNewTitle(){
+  function getNewTitle() {
     let OriginalTitle = "untitled Note";
     let title = OriginalTitle;
     let i = 1;
@@ -41,33 +42,31 @@ React.useEffect(()=>console.log("render"))
       title = OriginalTitle + " " + i;
       i += 1;
     }
-    return title
+    return title;
   }
 
   function create() {
-    let title = getNewTitle()
+    let title = getNewTitle();
     let content = "Type here..";
     save(title, content);
   }
 
   function reset() {
-    dispatch(resetNotes())
-    setFileSelected("test")
-   
+    dispatch(resetNotes());
+    setFileSelected("test");
   }
 
   function rename(title) {
-     let newTitle = prompt("New title");
-     if (newTitle === null) {return;}
-     remove(title);
-     save(newTitle, note.content);
-     setFileSelected(newTitle);
+    let newTitle = prompt("New title");
+    if (newTitle === null) {
+      return;
+    }
+    remove(title);
+    save(newTitle, note.content);
+    setFileSelected(newTitle);
   }
 
-
-
-  let fileNames = notes
-    .map((e) => e.title);
+  let fileNames = notes.map((e) => e.title);
 
   let note = notesDirectory[fileSelected] ?? {};
 
