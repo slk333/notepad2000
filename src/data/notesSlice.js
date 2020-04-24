@@ -23,17 +23,22 @@ export const notesSlice = createSlice({
     resetNotes: (state) => {
       return sampleData;
     },
+  
   },
 });
 
-// export actions
 export const { addNote, deleteNote, editNote, resetNotes } = notesSlice.actions;
 
-// selectors (READ)
-// 1) notes array sorted by modification date
+// notes array sorted by modification date
 export const selectNotes = (state) => Object.values(state.notes).sort(dateSort);
-// 2) all notes indexed by their title in one object
+// all notes indexed by their title in one object
 export const selectNotesDirectory = (state) => state.notes;
+// first note title
+export const selectFirstTitle = (state) =>
+// check if notes is empty
+  Object.values(state.notes).length === 0
+    ? ""
+    : Object.values(state.notes).sort(dateSort)[0].title;
 
 export default notesSlice.reducer;
 

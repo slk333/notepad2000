@@ -4,35 +4,33 @@ import FileSelector from "./components/FileSelector";
 import { useSelector, useDispatch } from "react-redux";
 import {
   addNote,
-  deleteNote,
+  resetNotes,
   selectNotes,
   selectNotesDirectory,
-  resetNotes,
+  selectFirstTitle,
 } from "./data/notesSlice";
 
 function App() {
-  React.useEffect(() => console.log("render"));
+ 
 
   const notes = useSelector(selectNotes);
   const notesDirectory = useSelector(selectNotesDirectory);
+  const firstTitle = useSelector(selectFirstTitle);
   const dispatch = useDispatch();
 
   let [fileSelected, setFileSelected] = React.useState(
-    notes.length === 0 ? "" : notes[0].title
+    firstTitle
   );
 
   React.useEffect(() => {
-    setFileSelected(notes.length === 0 ? "" : notes[0].title);
-  }, [notes]);
+  
+    setFileSelected(firstTitle);
+    console.log("render App")
+  }, [notes,firstTitle]);
 
-  function save(title, content) {
-    dispatch(addNote({ title, content }));
-    setFileSelected(title);
-  }
+  
 
-  function remove(title) {
-    dispatch(deleteNote(title));
-  }
+ 
 
   function getNewTitle() {
     let OriginalTitle = "untitled Note";
@@ -47,8 +45,8 @@ function App() {
 
   function create() {
     let title = getNewTitle();
-    let content = "Type here..";
-    save(title, content);
+    let content = "";
+    dispatch(addNote({ title, content }));
   }
 
   function reset() {
@@ -56,23 +54,13 @@ function App() {
     setFileSelected("test");
   }
 
-  function rename(title) {
-    let newTitle = prompt("New title");
-    if (newTitle === null) {
-      return;
-    }
-    remove(title);
-    save(newTitle, note.content);
-    setFileSelected(newTitle);
-  }
+ 
 
   let fileNames = notes.map((e) => e.title);
 
   let note = notesDirectory[fileSelected] ?? {};
 
-  // React.useEffect(() => {
-  //   localStorage.setItem("notes", JSON.stringify(notes));
-  // }, [notes]);
+
 
   return (
     <>
@@ -88,11 +76,9 @@ function App() {
               fileNames={fileNames}
             />
             <Notepad
-              fileSelected={fileSelected}
               note={note}
-              save={save}
-              remove={remove}
-              rename={rename}
+            
+           
             />
           </div>
         </div>
