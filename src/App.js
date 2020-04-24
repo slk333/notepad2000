@@ -19,6 +19,11 @@ React.useEffect(()=>console.log("render"))
     
   );
 
+    React.useEffect(()=>{
+      setFileSelected((notes.length === 0) ? "" : notes[0].title)
+    },[notes]
+    )
+
   function save(title, content) {
     dispatch(addNote({title,content}))
     setFileSelected(title)
@@ -26,8 +31,8 @@ React.useEffect(()=>console.log("render"))
 
   function remove(title) {
     dispatch(deleteNote(title))
-    if (notes[1] === undefined){return}
-  setFileSelected(notes[1].title)
+
+     console.log(notes[0].title)
   }
 
   function getNewTitle(){
@@ -66,7 +71,7 @@ React.useEffect(()=>console.log("render"))
   let fileNames = notes
     .map((e) => e.title);
 
-  let note = notesDirectory[fileSelected];
+  let note = notesDirectory[fileSelected] ?? {};
 
   // React.useEffect(() => {
   //   localStorage.setItem("notes", JSON.stringify(notes));
@@ -75,7 +80,7 @@ React.useEffect(()=>console.log("render"))
   return (
     <>
       <h1>Notes</h1>
-      {fileSelected === "" ? (
+      {notes.length === 0 ? (
         <></>
       ) : (
         <div>

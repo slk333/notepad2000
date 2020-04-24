@@ -15,7 +15,7 @@ width:50em;
 
 export default function Notepad({ note,save,remove,rename }) {
 
-  let [textAreaText, setTextAreaText] = React.useState(note.content)
+  let [textAreaText, setTextAreaText] = React.useState(note.content ?? "")
 
   const textAreaRef = React.useRef(null);
 
