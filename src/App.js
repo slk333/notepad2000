@@ -1,92 +1,76 @@
 import React from "react";
 import Notepad from "./components/Notepad";
 import FileSelector from "./components/FileSelector";
-import { sampleData, checkStorage } from "./controller";
+import { useSelector, useDispatch } from "react-redux";
+import { addNote, deleteNote,selectNotes,selectNotesDirectory ,resetNotes} from "./data/notesSlice";
+
 
 function App() {
-  checkStorage();
+ 
+React.useEffect(()=>console.log("render"))
 
-  // state init
-  let [notes, setNotes] = React.useState(
-    JSON.parse(localStorage.getItem("notes"))
-  );
+  const notes = useSelector(selectNotes);
+  const notesDirectory = useSelector(selectNotesDirectory);
+  const dispatch = useDispatch();
+
+
   let [fileSelected, setFileSelected] = React.useState(
-    Object.values(notes)
-      .sort(dateSort)
-      .map((note) => note.title)[0] ?? ""
+    (notes.length === 0) ? "" : notes[0].title
+    
   );
 
   function save(title, content) {
-    setNotes((prevNotes) => {
-      let newNote = {
-        title: title,
-        content: content,
-        modificationDate: new Date(),
-      };
-      let newNotes = { ...prevNotes };
-      newNotes[title] = newNote;
-      return newNotes;
-    });
+    dispatch(addNote({title,content}))
+    setFileSelected(title)
   }
 
   function remove(title) {
-    setNotes(function (prevNotes) {
-      let newNotes = { ...prevNotes };
-      delete newNotes[title];
-      if (Object.keys(newNotes).length === 0) {
-        setFileSelected("");
-      } else {
-        let newFirstTitle =
-          Object.values(newNotes).sort(dateSort)[0].title;
-        setFileSelected(newFirstTitle);
-      }
-      return newNotes;
-    });
+    dispatch(deleteNote(title))
+    if (notes[1] === undefined){return}
+  setFileSelected(notes[1].title)
   }
 
-  function create() {
+  function getNewTitle(){
     let OriginalTitle = "untitled Note";
     let title = OriginalTitle;
     let i = 1;
-    while (notes[title] != null) {
+    while (notesDirectory[title] != null) {
       title = OriginalTitle + " " + i;
       i += 1;
     }
+    return title
+  }
+
+  function create() {
+    let title = getNewTitle()
     let content = "Type here..";
     save(title, content);
-    setFileSelected(title);
-    console.log(title);
   }
 
   function reset() {
-    localStorage.setItem("notes", JSON.stringify(sampleData));
-    setNotes(JSON.parse(localStorage.getItem("notes")));
-    setFileSelected(Object.values(sampleData).sort(dateSort)[0].title);
+    dispatch(resetNotes())
+    setFileSelected("test")
+   
   }
 
   function rename(title) {
-    let newTitle = prompt("New title");
-    if (newTitle === null) {return;}
-    remove(title);
-    save(newTitle, note.content);
-    setFileSelected(newTitle);
+     let newTitle = prompt("New title");
+     if (newTitle === null) {return;}
+     remove(title);
+     save(newTitle, note.content);
+     setFileSelected(newTitle);
   }
 
-  function dateSort(noteA, noteB) {
-    let dateA = new Date(noteA["modificationDate"]);
-    let dateB = new Date(noteB["modificationDate"]);
-    return dateB - dateA;
-  }
 
-  let fileNames = Object.values(notes)
-    .sort(dateSort)
+
+  let fileNames = notes
     .map((e) => e.title);
 
-  let note = notes[fileSelected];
+  let note = notesDirectory[fileSelected];
 
-  React.useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
+  // React.useEffect(() => {
+  //   localStorage.setItem("notes", JSON.stringify(notes));
+  // }, [notes]);
 
   return (
     <>
