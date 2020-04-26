@@ -5,32 +5,23 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   addNote,
   resetNotes,
-  selectNotes,
+  selectSortedNotes,
   selectNotesDirectory,
   selectFirstTitle,
 } from "./data/notesSlice";
 
 function App() {
- 
-
-  const notes = useSelector(selectNotes);
+  const notes = useSelector(selectSortedNotes);
   const notesDirectory = useSelector(selectNotesDirectory);
   const firstTitle = useSelector(selectFirstTitle);
   const dispatch = useDispatch();
 
-  let [fileSelected, setFileSelected] = React.useState(
-    firstTitle
-  );
+  let [fileSelected, setFileSelected] = React.useState(firstTitle);
 
   React.useEffect(() => {
-  
     setFileSelected(firstTitle);
-    console.log("render App")
-  }, [notes,firstTitle]);
-
-  
-
- 
+    console.log("render App");
+  }, [notes, firstTitle]);
 
   function getNewTitle() {
     let OriginalTitle = "untitled Note";
@@ -54,33 +45,21 @@ function App() {
     setFileSelected("test");
   }
 
- 
-
-  let fileNames = notes.map((e) => e.title);
+  let fileNames = notes.map((note) => note.title);
 
   let note = notesDirectory[fileSelected] ?? {};
-
-
 
   return (
     <>
       <h1>Notes</h1>
-      {notes.length === 0 ? (
-        <></>
-      ) : (
-        <div>
-          <div className="appWrapper">
-            <FileSelector
-              fileSelected={fileSelected}
-              setFileSelected={setFileSelected}
-              fileNames={fileNames}
-            />
-            <Notepad
-              note={note}
-            
-           
-            />
-          </div>
+      {notes.length === 0 ? null : (
+        <div className="appWrapper">
+          <FileSelector
+            fileSelected={fileSelected}
+            setFileSelected={setFileSelected}
+            fileNames={fileNames}
+          />
+          <Notepad note={note} />
         </div>
       )}
       <div>

@@ -1,5 +1,5 @@
 import React from "react";
-import styled, { css } from 'styled-components'
+import styled, { css } from "styled-components";
 
 import arrow from "./arrow.png";
 
@@ -21,13 +21,12 @@ const Row = styled.div`
     vertical-align: middle;
   }
 
-
-
-  ${props => props.selected && css`
-    font-weight: 700;
-   background-color:#CCC;  
-  `}
-
+  ${(props) =>
+    props.selected &&
+    css`
+      font-weight: 700;
+      background-color: #ccc;
+    `}
 `;
 
 const FileSelector = styled.div`
@@ -36,20 +35,17 @@ const FileSelector = styled.div`
 `;
 
 export default function ({ fileSelected, setFileSelected, fileNames }) {
-  let rows = fileNames.map((title, index) => (
-
-    (title === fileSelected) ? (
-        <Row selected key={index} onClick={() => setFileSelected(title)}>
+  let rows = fileNames.map((title, index) =>
+    title === fileSelected ? (
+      <Row selected key={index} onClick={() => setFileSelected(title)}>
         {title}.txt <img alt="" src={arrow} />
-        </Row>
-
-      ) : (
-        <Row key={index} onClick={() => setFileSelected(title)}>
+      </Row>
+    ) : (
+      <Row key={index} onClick={() => setFileSelected(title)}>
         {title}.txt <img alt="" src={arrow} />
-        </Row>
-      )
-    
-  ));
+      </Row>
+    )
+  );
 
   return <FileSelector>{rows}</FileSelector>;
 }

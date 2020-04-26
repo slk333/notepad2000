@@ -30,15 +30,13 @@ export const notesSlice = createSlice({
 export const { addNote, deleteNote, editNote, resetNotes } = notesSlice.actions;
 
 // notes array sorted by modification date
-export const selectNotes = (state) => Object.values(state.notes).sort(dateSort);
+export const selectSortedNotes = (state) => Object.values(state.notes).sort(dateSort);
 // all notes indexed by their title in one object
 export const selectNotesDirectory = (state) => state.notes;
 // first note title
-export const selectFirstTitle = (state) =>
+export const selectFirstTitle = (state) => selectSortedNotes(state)[0]?.title;
 // check if notes is empty
-  Object.values(state.notes).length === 0
-    ? ""
-    : Object.values(state.notes).sort(dateSort)[0].title;
+    
 
 export default notesSlice.reducer;
 
