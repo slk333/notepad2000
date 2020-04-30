@@ -48,6 +48,7 @@ export default function Notepad({ note }) {
   }, [note]);
 
   React.useEffect(() => {
+    if (debouncedSearchTerm === note.content){return}
     saveCallback();
   }, [debouncedSearchTerm]);
 

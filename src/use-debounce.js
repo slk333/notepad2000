@@ -9,9 +9,11 @@ export default function useDebounce(value, delay) {
     () => {
       // Set debouncedValue to value (passed in) after the specified delay
       const handler = setTimeout(() => {
+       
+        if (debouncedValue === value) {return}
         console.log("debouncedValue " + debouncedValue)
         console.log("value " + value)
-        if (debouncedValue === value) {return}
+     
         setDebouncedValue(value);
       }, delay);
 
