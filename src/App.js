@@ -76,7 +76,7 @@ function App() {
         <button onClick={create}>NEW NOTE</button>
       </div>
       <div>
-        <button onClick={reset}>RESET</button>
+        {/* <button onClick={reset}>RESET</button> */}
       </div>
     </>
   );
