@@ -1,6 +1,7 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { addNote, deleteNote } from "../data/notesSlice";
+import useDebounce from "../use-debounce";
 
 /* The Notepad edits a single file at a time*/
 
@@ -21,7 +22,7 @@ let selectedButtonStyle = {
   backgroundColor: "white",
   color: "#333",
   border: "#333 1px solid",
-}
+};
 
 // Notepad Component
 
@@ -31,14 +32,24 @@ export default function Notepad({ note }) {
   let [noteIsSaved, setNoteIsSaved] = React.useState(true);
   let [textAreaText, setTextAreaText] = React.useState(note.content);
   const textAreaRef = React.useRef(null);
+  const debouncedSearchTerm = useDebounce(textAreaText, 1500);
+
+
+  const saveCallback = React.useCallback(() => {
+    save(note.title, textAreaRef.current.value);
+  }, [note]);
 
   // on new render effet
   React.useEffect(() => {
+    console.log(`rendered Notepad with note "${note.title}"`);
     textAreaRef.current.focus();
     setTextAreaText(note.content);
     setNoteIsSaved(true);
-    console.log("rendered Notepad");
   }, [note]);
+
+  React.useEffect(() => {
+    saveCallback();
+  }, [debouncedSearchTerm]);
 
   function save(title = note.title, content = textAreaText) {
     dispatch(addNote({ title, content }));
@@ -70,19 +81,23 @@ export default function Notepad({ note }) {
         ref={textAreaRef}
         value={textAreaText}
         onChange={updateTextArea}
+        onBlur={() => {
+          if (!noteIsSaved) {
+            save();
+          }
+        }}
       ></textarea>
       <div className="buttonList">
-
-  
-        {noteIsSaved 
-        ? <button onClick={()=>save()}>SAVE</button>
-        : <button style={selectedButtonStyle} onClick={()=>save()}>SAVE</button>
-        }
+        {noteIsSaved ? (
+          <button onClick={() => save()}>SAVE</button>
+        ) : (
+          <button style={selectedButtonStyle} onClick={() => save()}>
+            SAVE
+          </button>
+        )}
         <button onClick={() => remove()}>DELETE</button>
         <button onClick={() => rename()}>RENAME</button>
       </div>
     </StyledNotePad>
   );
 }
-
-

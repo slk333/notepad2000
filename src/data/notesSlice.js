@@ -34,7 +34,7 @@ export const selectSortedNotes = (state) => Object.values(state.notes).sort(date
 // all notes indexed by their title in one object
 export const selectNotesDirectory = (state) => state.notes;
 // first note title
-export const selectFirstTitle = (state) => selectSortedNotes(state)[0]?.title;
+export const selectMostRecentNote = (state) => selectSortedNotes(state)[0]
 // check if notes is empty
     
 

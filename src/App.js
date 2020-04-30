@@ -2,26 +2,36 @@ import React from "react";
 import Notepad from "./components/Notepad";
 import FileSelector from "./components/FileSelector";
 import { useSelector, useDispatch } from "react-redux";
+
 import {
   addNote,
   resetNotes,
   selectSortedNotes,
   selectNotesDirectory,
-  selectFirstTitle,
+  selectMostRecentNote,
 } from "./data/notesSlice";
 
 function App() {
   const notes = useSelector(selectSortedNotes);
   const notesDirectory = useSelector(selectNotesDirectory);
-  const firstTitle = useSelector(selectFirstTitle);
+  const mostRecentNote = useSelector(selectMostRecentNote);
   const dispatch = useDispatch();
 
-  let [fileSelected, setFileSelected] = React.useState(firstTitle);
+
+  let [fileSelected, setFileSelected] = React.useState(mostRecentNote?.title);
 
   React.useEffect(() => {
-    setFileSelected(firstTitle);
-    console.log("render App");
-  }, [notes, firstTitle]);
+  // select the most recent note
+  // should not conflict with user selecting another note
+  // only called on note creation on deletion, or in page reload
+  // should not be called when the fileSelected has been changed
+
+  // when data is deleted, fileSelected has an incorrect value
+  // we need a second render with the correct value coming from redux
+
+    if (mostRecentNote == null){return}
+    setFileSelected(mostRecentNote.title);
+  }, [notes, mostRecentNote]);
 
   function getNewTitle() {
     let OriginalTitle = "untitled Note";
@@ -47,7 +57,7 @@ function App() {
 
   let fileNames = notes.map((note) => note.title);
 
-  let note = notesDirectory[fileSelected] ?? {};
+  let note = notesDirectory[fileSelected] ?? mostRecentNote;
 
   return (
     <>
@@ -59,7 +69,7 @@ function App() {
             setFileSelected={setFileSelected}
             fileNames={fileNames}
           />
-          <Notepad note={note} />
+         {(note === undefined) ? <Notepad note={note}/> : <Notepad note={note}/> } 
         </div>
       )}
       <div>
